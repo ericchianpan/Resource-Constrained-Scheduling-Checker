@@ -1,0 +1,25 @@
+#!/bin/bash
+
+AND_CONSTRAINT=$1
+OR_CONSTRAINT=$2
+NOT_CONSTRAINT=$3
+
+cd "../PA01"
+for dir in *;
+do
+    cd "$dir"
+    echo "cd " $dir
+    for blif in ../../aoi_benchmark/*;
+    do
+        echo "schedule " ${blif}
+        # time ./schedule $blif ${AND_CONSTRAINT} ${OR_CONSTRAINT} ${NOT_CONSTRAINT} >> result.txt
+        timeout 1800s ./schedule $blif ${AND_CONSTRAINT} ${OR_CONSTRAINT} ${NOT_CONSTRAINT} >> result.txt
+        if [ -f "result.txt" ]; then
+            ../../checker/checker $blif result.txt ${AND_CONSTRAINT} ${OR_CONSTRAINT} ${NOT_CONSTRAINT}
+            rm result.txt
+        else
+            echo "no result found."
+        fi
+    done
+    cd ..
+done
